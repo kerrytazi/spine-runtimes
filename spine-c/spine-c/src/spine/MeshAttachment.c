@@ -170,15 +170,29 @@ void spMeshAttachment_updateUVs (spMeshAttachment* self) {
 		return;
 	}
 	default: {
-		float textureWidth = self->regionWidth / (self->regionU2 - self->regionU);
-		float textureHeight = self->regionHeight / (self->regionV2 - self->regionV);
-		u -= self->regionOffsetX / textureWidth;
-		v -= (self->regionOriginalHeight - self->regionOffsetY - self->regionHeight) / textureHeight;
-		width = self->regionOriginalWidth / textureWidth;
-		height = self->regionOriginalHeight / textureHeight;
-		for (i = 0; i < n; i += 2) {
-			uvs[i] = u + self->regionUVs[i] * width;
-			uvs[i + 1] = v + self->regionUVs[i + 1] * height;
+		if (self->regionRotate) {
+			float textureWidth = self->regionHeight / (self->regionU2 - self->regionU);
+			float textureHeight = self->regionWidth / (self->regionV2 - self->regionV);
+			u -= (self->regionOriginalHeight - self->regionOffsetY - self->regionHeight) / textureWidth;
+			v -= self->regionOffsetX / textureHeight;
+			width = self->regionOriginalHeight / textureWidth;
+			height = self->regionOriginalWidth / textureHeight;
+			for (i = 0; i < n; i += 2) {
+				uvs[i] = u + self->regionUVs[i + 1] * width;
+				uvs[i + 1] = v + self->regionUVs[i] * height;
+			}
+		}
+		else {
+			float textureWidth = self->regionWidth / (self->regionU2 - self->regionU);
+			float textureHeight = self->regionHeight / (self->regionV2 - self->regionV);
+			u -= self->regionOffsetX / textureWidth;
+			v -= (self->regionOriginalHeight - self->regionOffsetY - self->regionHeight) / textureHeight;
+			width = self->regionOriginalWidth / textureWidth;
+			height = self->regionOriginalHeight / textureHeight;
+			for (i = 0; i < n; i += 2) {
+				uvs[i] = u + self->regionUVs[i] * width;
+				uvs[i + 1] = v + self->regionUVs[i + 1] * height;
+			}
 		}
 	}
 	}
